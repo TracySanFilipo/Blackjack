@@ -1,7 +1,7 @@
 # H1 Blackjack
 
 ## H2 playing_cards.py
-This file contains two classes, one for Card and one for Deck.
+This file contains two classes, one for Card and one for Deck. Deck has a few methods.
 
 
 ## H2 Blackjack.py

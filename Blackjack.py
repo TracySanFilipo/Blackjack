@@ -5,35 +5,51 @@ from playing_cards import Card
 from playing_cards import Deck
 
 def blackjack():
-    trick = [('heart', 'ace'), ('heart', 2), ('heart', 3), ('heart', 4), ('heart', 5), ('heart', 6), ('heart', 7), ('heart', 8), ('heart', 9), ('heart', 10), ('heart', 'jack'), ('heart', 'queen'), ('heart', 'king'), ('diamond', 'ace'), ('diamond', 2), ('diamond', 3), ('diamond', 4), ('diamond', 5), ('diamond', 6), ('diamond', 7), ('diamond', 8), ('diamond', 9), ('diamond', 10), ('diamond', 'jack'), ('diamond', 'queen'), ('diamond', 'king'), ('spade', 'ace'), ('spade', 2), ('spade', 3), ('spade', 4), ('spade', 5), ('spade', 6), ('spade', 7), ('spade', 8), ('spade', 9), ('spade', 10), ('spade', 'jack'), ('spade', 'queen'), ('spade', 'king'), ('club', 'ace'), ('club', 2), ('club', 3), ('club', 4), ('club', 5), ('club', 6), ('club', 7), ('club', 8), ('club', 9), ('club', 10), ('club', 'jack'), ('club', 'queen'), ('club', 'king')]
-    # trick = shuffle(playlist)
+    trick = Deck()
+    trick.shuffle()
     player_hand = []
     dealer_hand = []
-    print(trick)
-    four_cards = deal_initial_hands(trick)
-    player_hand.append(four_cards[0])
-    dealer_hand.append(four_cards[1])
-    player_hand.append(four_cards[2])
-    dealer_hand.append(four_cards[3])
+    player_hand.append(trick.give_top_card())
+    dealer_hand.append(trick.give_top_card())
+    player_hand.append(trick.give_top_card())
+    dealer_hand.append(trick.give_top_card())
     print("Dealer has {}".format(dealer_hand[0]))
     print("You have {} and {}".format(player_hand[0], player_hand[1]))
     if calculate_hand(player_hand) == 21:
         if calculate_hand(dealer_hand) == 21:
-            print("It's a tie!")
+            print("It's a tie! You both have blackjack")
             return 21
         else:
-            print("You win!")
+            print("You win! You got blackjack")
             return 21
     while calculate_hand(player_hand) < 22:
         turn = input("Hit or stand? H/s  ")
         if turn.lower() == 'h' or turn.lower() == 'hit':
-            new_card = give_top_card(trick)
+            new_card = trick.give_top_card()
             player_hand.append(new_card)
-            check_deck(trick)
+            print("You got {}.".format(new_card))
+            empty_deck = trick.check_deck()
+            if empty_deck == True:
+                done = compare_hands(player_hand, dealer_hand)
+                if done == True:
+                    print("There are no more cards. You win")
+                    break
+                else:
+                    print("There are no more cards. The dealer is victorious")
+                    break
         elif turn.lower() == 's' or turn.lower() == 'stand':
             while calculate_hand(dealer_hand) < 17:
-                add_card = give_top_card(trick)
+                add_card = trick.give_top_card()
                 dealer_hand.append(add_card)
+                empty_deck2 = trick.check_deck()
+                if empty_deck2 == True:
+                    null_deck = compare_hands(player_hand, dealer_hand)
+                    if null_deck == True:
+                        print("The dealer took the rest of the cards. You win")
+                        break
+                    else:
+                        print("The dealer took the rest of the cards. The dealer is victorious")
+                        break
             end = compare_hands(player_hand, dealer_hand)
             if end == True:
                 print("You win")
@@ -43,29 +59,27 @@ def blackjack():
                 break
         else:
             print("Choose hit if you want another card. Choose stand if you don't.")
-    if calculate_hand(player_hand) > 22:
-        print("The dealer is victorious")
+    if calculate_hand(player_hand) > 21:
+        print("You went over 21. The dealer is victorious")
 
-# def shuffle(group):
-#     bridges = random.shuffle(group)
-#     return bridges
+
 
 def calculate_hand(hand):
     current_hand = hand
     calc_list = []
     thirteen_or_fourteen = 0
     for card in current_hand:
-        if card[1] == 'jack' or card[1] == 'queen' or card[1] == 'king':
+        if card.value == 'jack' or card.value == 'queen' or card.value == 'king':
             calc_list.append(10)
-        elif card[1] == 'ace':
+        elif card.value == 'ace':
             test = []
             ace_count = []
             for card3 in current_hand:
-                if card3[1] == 'jack' or card3[1] == 'queen' or card3[1] == 'king':
+                if card3.value == 'jack' or card3.value == 'queen' or card3.value == 'king':
                     test.append(10)
-                elif card3[1] == 2 or card3[1] == 3 or card3[1] == 4 or card3[1] == 5 or card3[1] == 6 or card3[1] == 7 or card3[1] == 8 or card3[1] == 9 or card3[1] == 10:
-                    test.append(card3[1])
-                elif card3[1] == 'ace':
+                elif card3.value == 2 or card3.value == 3 or card3.value == 4 or card3.value == 5 or card3.value == 6 or card3.value == 7 or card3.value == 8 or card3.value == 9 or card3.value == 10:
+                    test.append(card3.value)
+                elif card3.value == 'ace':
                     ace_count.append(1)
             list_no_aces = sum(test)
             number_aces = sum(ace_count)
@@ -92,32 +106,9 @@ def calculate_hand(hand):
                     if list_no_aces <= 7:
                         thirteen_or_fourteen = 14
         else:
-            calc_list.append(card[1])
+            calc_list.append(card.value)
     total = sum(calc_list) + thirteen_or_fourteen
     return total
-
-
-def deal_initial_hands(deck1):
-    base_deck = deck1
-    print(base_deck)
-    clover = []
-    clover.append(base_deck.pop(0))
-    clover.append(base_deck.pop(1))
-    clover.append(base_deck.pop(2))
-    clover.append(base_deck.pop(3))
-    return clover
-
-
-def give_top_card(deck1):
-    print("The card is {}".format(deck1[0]))
-    return deck1.pop(0)
-
-
-def check_deck(deck1):
-    height = len(deck1)
-    if height < 1:
-        print('empty deck')
-
 
 def compare_hands(hand1, hand2):
     points1 = calculate_hand(hand1)
