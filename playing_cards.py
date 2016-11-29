@@ -24,7 +24,7 @@ class Deck:
     def give_top_card(self):
         return self.deck1.pop(0)
 
-    def check_deck(self):
+    def check_deck_has_cards(self):
         height = len(self.deck1)
         if height < 1:
             return True
