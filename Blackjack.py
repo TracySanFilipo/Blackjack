@@ -73,47 +73,39 @@ def game_over_empty_deck(player_hand, dealer_hand):
 
 def calculate_hand(hand):
     current_hand = hand
-    calc_list = []
-    thirteen_or_fourteen = 0
+    hand_value = []
+    ace_count = 0
     for card in current_hand:
         if card.value in ['jack', 'queen', 'king']:
-            calc_list.append(10)
+            hand_value.append(10)
+        elif card.value in [2, 3, 4, 5, 6, 7, 8, 9, 10]:
+            hand_value.append(card.value)
         elif card.value == 'ace':
-            test = []
-            ace_count = 0
-            for card3 in current_hand:
-                if card3.value in ['jack', 'queen', 'king']:
-                    test.append(10)
-                elif card3.value in [2, 3, 4, 5, 6, 7, 8, 9, 10]:
-                    test.append(card3.value)
-                elif card3.value == 'ace':
-                    ace_count += 1
-            total_minus_aces = sum(test)
-            if total_minus_aces >= 11:
-                calc_list.append(1)
-            if total_minus_aces == 10:
-                if ace_count == 1:
-                    calc_list.append(11)
-                if ace_count > 1:
-                    calc_list.append(1)
-            if total_minus_aces <= 9:
-                if ace_count == 1:
-                    calc_list.append(11)
-                if ace_count == 2:
-                    calc_list.append(6)
-                if ace_count == 3:
-                    if total_minus_aces == 9:
-                        calc_list.append(1)
-                    if total_minus_aces <= 8:
-                        thirteen_or_fourteen = 13
-                if ace_count == 4:
-                    if total_minus_aces > 7:
-                        calc_list.append(1)
-                    if total_minus_aces <= 7:
-                        thirteen_or_fourteen = 14
-        else:
-            calc_list.append(card.value)
-    total = sum(calc_list) + thirteen_or_fourteen
+            ace_count += 1
+    total_minus_aces = sum(hand_value)
+    if total_minus_aces >= 11:
+        hand_value.append(ace_count)
+    elif total_minus_aces == 10:
+        if ace_count == 1:
+            hand_value.append(11)
+        elif ace_count > 1:
+            hand_value.append(ace_count)
+    elif total_minus_aces <= 9:
+        if ace_count == 1:
+            hand_value.append(11)
+        elif ace_count == 2:
+            hand_value.append(12)
+        elif ace_count == 3:
+            if total_minus_aces == 9:
+                hand_value.append(ace_count)
+            elif total_minus_aces <= 8:
+                hand_value.append(13)
+        elif ace_count == 4:
+            if total_minus_aces > 7:
+                hand_value.append(ace_count)
+            elif total_minus_aces <= 7:
+                hand_value.append(14)
+    total = sum(hand_value)
     return total
 
 
