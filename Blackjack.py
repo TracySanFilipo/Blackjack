@@ -19,28 +19,23 @@ def blackjack():
             new_card = deck_cards.give_top_card()
             player_hand.append(new_card)
             print("You got {}.".format(new_card))
-            empty_deck = deck_cards.check_deck_has_cards()
-            if empty_deck is True:
-                game_over_empty_deck(player_hand, dealer_hand)
-                break
         elif turn.lower() in ['s', 'stand']:
             while calculate_hand(dealer_hand) < 17:
                 add_card = deck_cards.give_top_card()
                 dealer_hand.append(add_card)
-                empty_deck = deck_cards.check_deck_has_cards()
-                if empty_deck is True:
-                    game_over_empty_deck(player_hand, dealer_hand)
-                    break
             end = compare_hands(player_hand, dealer_hand)
             if end is True:
+                show_both_hands(dealer_hand, player_hand)
                 print("You win")
                 break
             else:
+                show_both_hands(dealer_hand, player_hand)
                 print("The dealer is victorious")
                 break
         else:
             print("Choose hit if you want another card. Choose stand if you don't.")
     if calculate_hand(player_hand) > 21:
+        show_both_hands(dealer_hand, player_hand)
         print("You went over 21. The dealer is victorious")
 
 
@@ -58,17 +53,25 @@ def deal_hand(deck_cards):
 
 def initial_blackjack(dealer_hand):
     if calculate_hand(dealer_hand) == 21:
-        print("It's a tie! You both have blackjack")
+        print("The dealer had:")
+        show_full_hand(dealer_hand)
+        print("It's a tie! You both have blackjack!")
     else:
-        print("You win! You got blackjack")
+        print("The dealer had:")
+        show_full_hand(dealer_hand)
+        print("You win! You got blackjack!")
 
 
-def game_over_empty_deck(player_hand, dealer_hand):
-    done = compare_hands(player_hand, dealer_hand)
-    if done is True:
-        print("There are no more cards. You win")
-    else:
-        print("There are no more cards. The dealer is victorious")
+def show_both_hands(dealer_hand, player_hand):
+    print("You had:")
+    show_full_hand(player_hand)
+    print("The dealer had:")
+    show_full_hand(dealer_hand)
+
+
+def show_full_hand(hand):
+    for i in hand:
+        print("{}".format(i))
 
 
 def calculate_hand(hand):
